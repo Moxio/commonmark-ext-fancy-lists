@@ -336,8 +336,8 @@ HTML;
         $markdown = <<<MD
 1) First
 A) First again
-I) Another first
-II) Second
+i) Another first
+ii) Second
 MD;
         $expectedHtml = <<<HTML
 <ol>
@@ -346,7 +346,7 @@ MD;
 <ol type="A">
   <li>First again</li>
 </ol>
-<ol type="I">
+<ol type="i">
   <li>Another first</li>
   <li>Second</li>
 </ol>
@@ -380,20 +380,20 @@ B. Russell was an English philosopher.
 
 I. Elba is an English actor.
 
-B.  foo
-C.  bar
-
 I.  foo
 II. bar
+
+B.  foo
+C.  bar
 MD;
         $expectedHtml = <<<HTML
 <p>B. Russell was an English philosopher.</p>
 <p>I. Elba is an English actor.</p>
-<ol start="2" type="A">
+<ol type="I">
   <li>foo</li>
   <li>bar</li>
 </ol>
-<ol type="I">
+<ol start="2" type="A">
   <li>foo</li>
   <li>bar</li>
 </ol>
