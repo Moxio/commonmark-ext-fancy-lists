@@ -69,9 +69,9 @@ HTML;
     public function testSupportsUppercaseAlphabeticalNumbering(): void
     {
         $markdown = <<<MD
-A. foo
-B. bar
-C. baz
+A) foo
+B) bar
+C) baz
 MD;
         $expectedHtml = <<<HTML
 <ol type="A">
@@ -87,9 +87,9 @@ HTML;
     public function testSupportsOffsetsForUppercaseAlphabeticalNumbering(): void
     {
         $markdown = <<<MD
-B. foo
-C. bar
-D. baz
+B) foo
+C) bar
+D) baz
 MD;
         $expectedHtml = <<<HTML
 <ol type="A" start="2">
@@ -141,9 +141,9 @@ HTML;
     public function testSupportsUppercaseRomanNumbering(): void
     {
         $markdown = <<<MD
-I. foo
-II. bar
-III. baz
+I) foo
+II) bar
+III) baz
 MD;
         $expectedHtml = <<<HTML
 <ol type="I">
@@ -316,8 +316,8 @@ HTML;
         $markdown = <<<MD
 1) First
 A) First again
-I. Another first
-II. Second
+I) Another first
+II) Second
 MD;
         $expectedHtml = <<<HTML
 <ol>
@@ -329,6 +329,35 @@ MD;
 <ol type="I">
   <li>Another first</li>
   <li>Second</li>
+</ol>
+HTML;
+
+        $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
+    }
+
+    public function testRequiresTwoSpacesAfterACapitalLetterAndAPeriod(): void
+    {
+        $markdown = <<<MD
+B. Russell was an English philosopher.
+
+I. Elba is an English actor.
+
+B.  foo
+C.  bar
+
+I.  foo
+II. bar
+MD;
+        $expectedHtml = <<<HTML
+<p>B. Russell was an English philosopher.</p>
+<p>I. Elba is an English actor.</p>
+<ol start="2" type="A">
+  <li>foo</li>
+  <li>bar</li>
+</ol>
+<ol type="I">
+  <li>foo</li>
+  <li>bar</li>
 </ol>
 HTML;
 

@@ -32,6 +32,7 @@ use League\CommonMark\Util\ConfigurationAwareInterface;
 use League\CommonMark\Util\ConfigurationInterface;
 use League\CommonMark\Util\RegexHelper;
 use Romans\Filter\RomanToInt;
+use Romans\Lexer\Exception as RomansLexerException;
 use Romans\Parser\Exception as RomansParserException;
 
 final class ListParser implements BlockParserInterface, ConfigurationAwareInterface
@@ -74,6 +75,7 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
             $data->delimiter = null;
             $data->bulletChar = $rest[0];
             $markerLength = 1;
+            $number = null;
             $numberingType = null;
         } elseif (($matches = RegexHelper::matchAll('/^(\d{1,9}|[a-z]|[A-Z]|[ivxlcdm]+|[IVXLCDM]+|#)([.)])/', $rest)) && (!($context->getContainer() instanceof Paragraph) || in_array($matches[1], ['1', 'a', 'A', 'i', 'I'], true))) {
             $data = new ListData();
@@ -94,7 +96,7 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
                 if ($matches[1] === 'I' || strlen($matches[1]) > 1 || ($container instanceof ListBlock && $container->getListData()->bulletChar === 'I')) {
                     try {
                         $data->start = $this->romanToIntFilter->filter($matches[1]);
-                    } catch (RomansParserException $e) {
+                    } catch (RomansLexerException|RomansParserException $e) {
                         return false;
                     }
                     $numberingType = 'I';
@@ -106,7 +108,7 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
                 if ($matches[1] === 'i' || strlen($matches[1]) > 1 || ($container instanceof ListBlock && $container->getListData()->bulletChar === 'i')) {
                     try {
                         $data->start = $this->romanToIntFilter->filter(strtoupper($matches[1]));
-                    } catch (RomansParserException $e) {
+                    } catch (RomansLexerException|RomansParserException $e) {
                         return false;
                     }
                     $numberingType = 'i';
@@ -119,6 +121,7 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
             $data->delimiter = $matches[2];
             $data->bulletChar = $numberingType;
             $markerLength = \strlen($matches[0]);
+            $number = $matches[1];
         } else {
             return false;
         }
@@ -127,6 +130,15 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
         $nextChar = $tmpCursor->peek($markerLength);
         if (!($nextChar === null || $nextChar === "\t" || $nextChar === ' ')) {
             return false;
+        }
+
+        // If the marker is a capital letter with a period, make sure it is followed by at least two spaces.
+        // See https://pandoc.org/MANUAL.html#fn1
+        if ($number !== null && $data->delimiter === "." && strlen($number) === 1 && ctype_upper($number)) {
+            $nextChar = $tmpCursor->peek($markerLength + 1);
+            if (!($nextChar === null || $nextChar === "\t" || $nextChar === ' ')) {
+                return false;
+            }
         }
 
         // If it interrupts paragraph, make sure first line isn't blank
