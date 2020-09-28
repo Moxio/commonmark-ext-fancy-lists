@@ -355,6 +355,24 @@ HTML;
         $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
     }
 
+    public function testStartsANewListWhenASequenceOfLettersIsNotAValidRomanNumeral()
+    {
+        $markdown = <<<MD
+I) First
+A) First again
+MD;
+        $expectedHtml = <<<HTML
+<ol type="I">
+  <li>First</li>
+</ol>
+<ol type="A">
+  <li>First again</li>
+</ol>
+HTML;
+
+        $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
+    }
+
     public function testRequiresTwoSpacesAfterACapitalLetterAndAPeriod(): void
     {
         $markdown = <<<MD
