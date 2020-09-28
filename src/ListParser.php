@@ -68,7 +68,7 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
             $data->bulletChar = $rest[0];
             $markerLength = 1;
             $numberingType = null;
-        } elseif (($matches = RegexHelper::matchAll('/^(\d{1,9}|[a-z])([.)])/', $rest)) && (!($context->getContainer() instanceof Paragraph) || $matches[1] === '1')) {
+        } elseif (($matches = RegexHelper::matchAll('/^(\d{1,9}|[a-z]|[A-Z])([.)])/', $rest)) && (!($context->getContainer() instanceof Paragraph) || $matches[1] === '1')) {
             $data = new ListData();
             $data->markerOffset = $indent;
             $data->type = ListBlock::TYPE_ORDERED;
@@ -76,6 +76,9 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
             if (ctype_digit($matches[1])) {
                 $data->start = (int)$matches[1];
                 $numberingType = null;
+            } else if (ctype_upper($matches[1])) {
+                $data->start = ord($matches[1]) - ord('A') + 1;
+                $numberingType = "A";
             } else {
                 $data->start = ord($matches[1]) - ord('a') + 1;
                 $numberingType = "a";

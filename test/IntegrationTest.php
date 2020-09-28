@@ -48,6 +48,24 @@ HTML;
         $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
     }
 
+    public function testSupportsUppercaseAlphabeticalNumbering(): void
+    {
+        $markdown = <<<MD
+A. foo
+B. bar
+C. baz
+MD;
+        $expectedHtml = <<<HTML
+<ol type="A">
+  <li>foo</li>
+  <li>bar</li>
+  <li>baz</li>
+</ol>
+HTML;
+
+        $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
+    }
+
     public function assertMarkdownIsConvertedTo($expectedHtml, $markdown): void
     {
         $environment = Environment::createCommonMarkEnvironment();
