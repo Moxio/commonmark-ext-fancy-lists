@@ -284,6 +284,26 @@ HTML;
         $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
     }
 
+    public function testAllowsHashToInterruptParagraphs(): void
+    {
+        $markdown = <<<MD
+I need to buy
+#. new shoes
+#. a coat
+#. a plane ticket
+MD;
+        $expectedHtml = <<<HTML
+<p>I need to buy</p>
+<ol>
+  <li>new shoes</li>
+  <li>a coat</li>
+  <li>a plane ticket</li>
+</ol>
+HTML;
+
+        $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
+    }
+
     public function testSupportsNestedLists()
     {
         $markdown = <<<MD

@@ -77,7 +77,7 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
             $markerLength = 1;
             $number = null;
             $numberingType = null;
-        } elseif (($matches = RegexHelper::matchAll('/^(\d{1,9}|[a-z]|[A-Z]|[ivxlcdm]+|[IVXLCDM]+|#)([.)])/', $rest)) && (!($context->getContainer() instanceof Paragraph) || in_array($matches[1], ['1', 'a', 'A', 'i', 'I'], true))) {
+        } elseif (($matches = RegexHelper::matchAll('/^(\d{1,9}|[a-z]|[A-Z]|[ivxlcdm]+|[IVXLCDM]+|#)([.)])/', $rest)) && (!($context->getContainer() instanceof Paragraph) || in_array($matches[1], ['1', 'a', 'A', 'i', 'I', '#'], true))) {
             $data = new ListData();
             $data->markerOffset = $indent;
             $data->type = ListBlock::TYPE_ORDERED;
