@@ -190,6 +190,42 @@ HTML;
         $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
     }
 
+    public function testSupportsHashAsListMarkerForSubsequentItems(): void
+    {
+        $markdown = <<<MD
+1. foo
+#. bar
+#. baz
+MD;
+        $expectedHtml = <<<HTML
+<ol>
+  <li>foo</li>
+  <li>bar</li>
+  <li>baz</li>
+</ol>
+HTML;
+
+        $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
+    }
+
+    public function testSupportsHashAsListMarkerForInitialItem(): void
+    {
+        $markdown = <<<MD
+#. foo
+#. bar
+#. baz
+MD;
+        $expectedHtml = <<<HTML
+<ol>
+  <li>foo</li>
+  <li>bar</li>
+  <li>baz</li>
+</ol>
+HTML;
+
+        $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
+    }
+
     public function assertMarkdownIsConvertedTo($expectedHtml, $markdown): void
     {
         $environment = Environment::createCommonMarkEnvironment();
