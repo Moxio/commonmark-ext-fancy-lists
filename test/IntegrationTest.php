@@ -120,6 +120,24 @@ HTML;
         $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
     }
 
+    public function testSupportsOffsetsForLowercaseRomanNumbering(): void
+    {
+        $markdown = <<<MD
+iv. foo
+v. bar
+vi. baz
+MD;
+        $expectedHtml = <<<HTML
+<ol type="i" start="4">
+  <li>foo</li>
+  <li>bar</li>
+  <li>baz</li>
+</ol>
+HTML;
+
+        $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
+    }
+
     public function testSupportsUppercaseRomanNumbering(): void
     {
         $markdown = <<<MD
@@ -129,6 +147,24 @@ III. baz
 MD;
         $expectedHtml = <<<HTML
 <ol type="I">
+  <li>foo</li>
+  <li>bar</li>
+  <li>baz</li>
+</ol>
+HTML;
+
+        $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
+    }
+
+    public function testSupportsOffsetsForUppercaseRomanNumbering(): void
+    {
+        $markdown = <<<MD
+XII. foo
+XIII. bar
+XIV. baz
+MD;
+        $expectedHtml = <<<HTML
+<ol type="I" start="12">
   <li>foo</li>
   <li>bar</li>
   <li>baz</li>

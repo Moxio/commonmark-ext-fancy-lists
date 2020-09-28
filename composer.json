@@ -22,7 +22,8 @@
 	},
 	"require": {
 		"php": "^7.4 || ^8.0",
-		"league/commonmark": "^1.0"
+		"league/commonmark": "^1.0",
+		"wandersonwhcr/romans": "^1.2"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "^9.3"

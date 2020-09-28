@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "36c29272977787d2b0b0839fd97d9039",
+    "content-hash": "e9056b5458017c887b0197c0078c629a",
     "packages": [
         {
             "name": "league/commonmark",
@@ -100,6 +100,57 @@
                 }
             ],
             "time": "2020-09-13T14:44:46+00:00"
+        },
+        {
+            "name": "wandersonwhcr/romans",
+            "version": "v1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/wandersonwhcr/romans.git",
+                "reference": "7e8394d396fe6397d3d8cb017aebdd7fc08c38b2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/wandersonwhcr/romans/zipball/7e8394d396fe6397d3d8cb017aebdd7fc08c38b2",
+                "reference": "7e8394d396fe6397d3d8cb017aebdd7fc08c38b2",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "jakub-onderka/php-parallel-lint": "1.0.*",
+                "phpmd/phpmd": "2.6.*",
+                "phpunit/phpunit": "6.1.*",
+                "sebastian/phpcpd": "3.0.*",
+                "squizlabs/php_codesniffer": "3.5.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-develop": "1.2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Romans\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A Simple PHP Roman Numerals Library",
+            "keywords": [
+                "converter",
+                "filter",
+                "format",
+                "roman",
+                "roman-number",
+                "roman-numeral",
+                "validator"
+            ],
+            "time": "2019-12-18T12:02:40+00:00"
         }
     ],
     "packages-dev": [
