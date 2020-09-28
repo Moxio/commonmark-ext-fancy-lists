@@ -284,6 +284,33 @@ HTML;
         $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
     }
 
+    public function testSupportsNestedLists()
+    {
+        $markdown = <<<MD
+ 9)  Ninth
+10)  Tenth
+11)  Eleventh
+       i. subone
+      ii. subtwo
+     iii. subthree
+MD;
+        $expectedHtml = <<<HTML
+<ol start="9">
+  <li>Ninth</li>
+  <li>Tenth</li>
+  <li>Eleventh
+<ol type="i">
+  <li>subone</li>
+  <li>subtwo</li>
+  <li>subthree</li>
+</ol>
+</li>
+</ol>
+HTML;
+
+        $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
+    }
+
     public function assertMarkdownIsConvertedTo($expectedHtml, $markdown): void
     {
         $environment = Environment::createCommonMarkEnvironment();
