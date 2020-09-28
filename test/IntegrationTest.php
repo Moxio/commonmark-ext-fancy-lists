@@ -373,6 +373,37 @@ HTML;
         $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
     }
 
+    public function testIMarkerIsConsideredToBeAlphabeticalWhenPartOfAnAlphabeticalList()
+    {
+        $markdown = <<<MD
+A) First
+I) Second
+II) First of new list
+
+a) First
+i) Second
+ii) First of new list
+MD;
+        $expectedHtml = <<<HTML
+<ol type="A">
+  <li>First</li>
+  <li>Second</li>
+</ol>
+<ol type="I" start="2">
+  <li>First of new list</li>
+</ol>
+<ol type="a">
+  <li>First</li>
+  <li>Second</li>
+</ol>
+<ol type="i" start="2">
+  <li>First of new list</li>
+</ol>
+HTML;
+
+        $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
+    }
+
     public function testRequiresTwoSpacesAfterACapitalLetterAndAPeriod(): void
     {
         $markdown = <<<MD

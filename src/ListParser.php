@@ -93,34 +93,42 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
                 $data->start = (int)$matches[1];
                 $numberingType = null;
             } else if (ctype_upper($matches[1])) {
+                $withinRomanList = $container instanceof ListBlock && $container->getListData()->bulletChar === 'I';
+                $withinAlphaList = $container instanceof ListBlock && $container->getListData()->bulletChar === 'A';
                 try {
                     $parsedRomanNumber = $this->romanToIntFilter->filter($matches[1]);
                     $isValidRoman = true;
                 } catch (RomansLexerException|RomansParserException $e) {
                     $isValidRoman = false;
                 }
+                $isValidAlpha = strlen($matches[1]) === 1;
+                $preferRomanOverAlpha = $withinRomanList || (!$withinAlphaList && $matches[1] === 'I');
 
-                if ($isValidRoman && ($matches[1] === 'I' || strlen($matches[1]) > 1 || ($container instanceof ListBlock && $container->getListData()->bulletChar === 'I'))) {
+                if ($isValidRoman && (!$isValidAlpha || $preferRomanOverAlpha)) {
                     $data->start = $parsedRomanNumber;
                     $numberingType = 'I';
-                } else if (strlen($matches[1]) === 1) {
+                } else if ($isValidAlpha) {
                     $data->start = ord($matches[1]) - ord('A') + 1;
                     $numberingType = 'A';
                 } else {
                     return false;
                 }
             } else {
+                $withinRomanList = $container instanceof ListBlock && $container->getListData()->bulletChar === 'i';
+                $withinAlphaList = $container instanceof ListBlock && $container->getListData()->bulletChar === 'a';
                 try {
                     $parsedRomanNumber = $this->romanToIntFilter->filter(strtoupper($matches[1]));
                     $isValidRoman = true;
                 } catch (RomansLexerException|RomansParserException $e) {
                     $isValidRoman = false;
                 }
+                $isValidAlpha = strlen($matches[1]) === 1;
+                $preferRomanOverAlpha = $withinRomanList || (!$withinAlphaList && $matches[1] === 'i');
 
-                if ($isValidRoman && ($matches[1] === 'i' || strlen($matches[1]) > 1 || ($container instanceof ListBlock && $container->getListData()->bulletChar === 'i'))) {
+                if ($isValidRoman && (!$isValidAlpha || $preferRomanOverAlpha)) {
                     $data->start = $parsedRomanNumber;
                     $numberingType = 'i';
-                } else if (strlen($matches[1]) === 1) {
+                } else if ($isValidAlpha) {
                     $data->start = ord($matches[1]) - ord('a') + 1;
                     $numberingType = 'a';
                 } else {
