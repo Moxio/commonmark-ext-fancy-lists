@@ -226,6 +226,64 @@ HTML;
         $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
     }
 
+    public function testAllowsFirstNumbersToInterruptParagraphs(): void
+    {
+        $markdown = <<<MD
+I need to buy
+a. new shoes
+b. a coat
+c. a plane ticket
+
+I also need to buy
+i. new shoes
+ii. a coat
+iii. a plane ticket
+MD;
+        $expectedHtml = <<<HTML
+<p>I need to buy</p>
+<ol type="a">
+  <li>new shoes</li>
+  <li>a coat</li>
+  <li>a plane ticket</li>
+</ol>
+<p>I also need to buy</p>
+<ol type="i">
+  <li>new shoes</li>
+  <li>a coat</li>
+  <li>a plane ticket</li>
+</ol>
+HTML;
+
+        $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
+    }
+
+    public function testDoesNotAllowSubsequentNumbersToInterruptParagraphs(): void
+    {
+        $markdown = <<<MD
+I need to buy
+b. new shoes
+c. a coat
+d. a plane ticket
+
+I also need to buy
+ii. new shoes
+iii. a coat
+iv. a plane ticket
+MD;
+        $expectedHtml = <<<HTML
+<p>I need to buy
+b. new shoes
+c. a coat
+d. a plane ticket</p>
+<p>I also need to buy
+ii. new shoes
+iii. a coat
+iv. a plane ticket</p>
+HTML;
+
+        $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
+    }
+
     public function assertMarkdownIsConvertedTo($expectedHtml, $markdown): void
     {
         $environment = Environment::createCommonMarkEnvironment();
