@@ -66,6 +66,42 @@ HTML;
         $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
     }
 
+    public function testSupportsLowercaseRomanNumbering(): void
+    {
+        $markdown = <<<MD
+i. foo
+ii. bar
+iii. baz
+MD;
+        $expectedHtml = <<<HTML
+<ol type="i">
+  <li>foo</li>
+  <li>bar</li>
+  <li>baz</li>
+</ol>
+HTML;
+
+        $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
+    }
+
+    public function testSupportsUppercaseRomanNumbering(): void
+    {
+        $markdown = <<<MD
+I. foo
+II. bar
+III. baz
+MD;
+        $expectedHtml = <<<HTML
+<ol type="I">
+  <li>foo</li>
+  <li>bar</li>
+  <li>baz</li>
+</ol>
+HTML;
+
+        $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
+    }
+
     public function assertMarkdownIsConvertedTo($expectedHtml, $markdown): void
     {
         $environment = Environment::createCommonMarkEnvironment();
