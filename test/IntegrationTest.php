@@ -174,6 +174,22 @@ HTML;
         $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
     }
 
+    public function testIgnoresInvalidRomanNumeralsAsListMarker(): void
+    {
+        $markdown = <<<MD
+VV. foo
+VVI. bar
+VVII. baz
+MD;
+        $expectedHtml = <<<HTML
+<p>VV. foo
+VVI. bar
+VVII. baz</p>
+HTML;
+
+        $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
+    }
+
     public function assertMarkdownIsConvertedTo($expectedHtml, $markdown): void
     {
         $environment = Environment::createCommonMarkEnvironment();

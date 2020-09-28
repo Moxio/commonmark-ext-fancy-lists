@@ -32,6 +32,7 @@ use League\CommonMark\Util\ConfigurationAwareInterface;
 use League\CommonMark\Util\ConfigurationInterface;
 use League\CommonMark\Util\RegexHelper;
 use Romans\Filter\RomanToInt;
+use Romans\Parser\Exception as RomansParserException;
 
 final class ListParser implements BlockParserInterface, ConfigurationAwareInterface
 {
@@ -83,7 +84,11 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
                 $numberingType = null;
             } else if (ctype_upper($matches[1])) {
                 if ($matches[1] === 'I' || strlen($matches[1]) > 1) {
-                    $data->start = $this->romanToIntFilter->filter($matches[1]);
+                    try {
+                        $data->start = $this->romanToIntFilter->filter($matches[1]);
+                    } catch (RomansParserException $e) {
+                        return false;
+                    }
                     $numberingType = 'I';
                 } else {
                     $data->start = ord($matches[1]) - ord('A') + 1;
@@ -91,7 +96,11 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
                 }
             } else {
                 if ($matches[1] === 'i' || strlen($matches[1]) > 1) {
-                    $data->start = $this->romanToIntFilter->filter(strtoupper($matches[1]));
+                    try {
+                        $data->start = $this->romanToIntFilter->filter(strtoupper($matches[1]));
+                    } catch (RomansParserException $e) {
+                        return false;
+                    }
                     $numberingType = 'i';
                 } else {
                     $data->start = ord($matches[1]) - ord('a') + 1;
