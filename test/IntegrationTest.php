@@ -404,6 +404,45 @@ HTML;
         $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
     }
 
+    public function testSingleLetterRomanNumeralsOtherThanIAreConsideredAlphabeticalWithoutContext()
+    {
+        $markdown = <<<MD
+v. foo
+
+X) foo
+
+l. foo
+
+C) foo
+
+d. foo
+
+M) foo
+MD;
+        $expectedHtml = <<<HTML
+<ol type="a" start="22">
+  <li>foo</li>
+</ol>
+<ol type="A"  start="24">
+  <li>foo</li>
+</ol>
+<ol type="a"  start="12">
+  <li>foo</li>
+</ol>
+<ol type="A"  start="3">
+  <li>foo</li>
+</ol>
+<ol type="a" start="4">
+  <li>foo</li>
+</ol>
+<ol type="A" start="13">
+  <li>foo</li>
+</ol>
+HTML;
+
+        $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
+    }
+
     public function testRequiresTwoSpacesAfterACapitalLetterAndAPeriod(): void
     {
         $markdown = <<<MD
