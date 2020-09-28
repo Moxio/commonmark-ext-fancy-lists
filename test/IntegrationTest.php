@@ -311,6 +311,30 @@ HTML;
         $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
     }
 
+    public function testStartsANewListWhenADifferentTypeOfNumberingIsUsed()
+    {
+        $markdown = <<<MD
+1) First
+A) First again
+I. Another first
+II. Second
+MD;
+        $expectedHtml = <<<HTML
+<ol>
+  <li>First</li>
+</ol>
+<ol type="A">
+  <li>First again</li>
+</ol>
+<ol type="I">
+  <li>Another first</li>
+  <li>Second</li>
+</ol>
+HTML;
+
+        $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
+    }
+
     public function assertMarkdownIsConvertedTo($expectedHtml, $markdown): void
     {
         $environment = Environment::createCommonMarkEnvironment();

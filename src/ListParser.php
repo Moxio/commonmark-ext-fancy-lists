@@ -66,6 +66,7 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
         $tmpCursor->advanceToNextNonSpaceOrTab();
         $rest = $tmpCursor->getRemainder();
 
+        $container = $context->getContainer();
         if (\preg_match($this->listMarkerRegex ?? $this->generateListMarkerRegex(), $rest) === 1) {
             $data = new ListData();
             $data->markerOffset = $indent;
@@ -81,12 +82,16 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
 
             if ($matches[1] === '#') {
                 $data->start = 1;
-                $numberingType = null;
+                if ($container instanceof ListBlock) {
+                    $numberingType = $container->getListData()->bulletChar;
+                } else {
+                    $numberingType = null;
+                }
             } else if (ctype_digit($matches[1])) {
                 $data->start = (int)$matches[1];
                 $numberingType = null;
             } else if (ctype_upper($matches[1])) {
-                if ($matches[1] === 'I' || strlen($matches[1]) > 1) {
+                if ($matches[1] === 'I' || strlen($matches[1]) > 1 || ($container instanceof ListBlock && $container->getListData()->bulletChar === 'I')) {
                     try {
                         $data->start = $this->romanToIntFilter->filter($matches[1]);
                     } catch (RomansParserException $e) {
@@ -98,7 +103,7 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
                     $numberingType = 'A';
                 }
             } else {
-                if ($matches[1] === 'i' || strlen($matches[1]) > 1) {
+                if ($matches[1] === 'i' || strlen($matches[1]) > 1 || ($container instanceof ListBlock && $container->getListData()->bulletChar === 'i')) {
                     try {
                         $data->start = $this->romanToIntFilter->filter(strtoupper($matches[1]));
                     } catch (RomansParserException $e) {
@@ -112,7 +117,7 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
             }
 
             $data->delimiter = $matches[2];
-            $data->bulletChar = null;
+            $data->bulletChar = $numberingType;
             $markerLength = \strlen($matches[0]);
         } else {
             return false;
@@ -125,7 +130,6 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
         }
 
         // If it interrupts paragraph, make sure first line isn't blank
-        $container = $context->getContainer();
         if ($container instanceof Paragraph && !RegexHelper::matchAt(RegexHelper::REGEX_NON_SPACE, $rest, $markerLength)) {
             return false;
         }
