@@ -117,7 +117,7 @@ All of the above are entirely compatible with how Pandoc works. There
 are two small differences with Pandoc's syntax:
 
 * This plugin does not support list numbers enclosed in parentheses,
-  as `the Commonmark spec does not support these either for lists
+  as the Commonmark spec does not support these either for lists
   numbered with Arabic numerals.
 * Pandoc does not allow any list to interrupt a paragraph. In the
   spirit of the Commonmark spec (which allows only lists starting
