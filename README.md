@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/Moxio/commonmark-ext-fancy-lists.svg?branch=master)](https://travis-ci.org/Moxio/commonmark-ext-fancy-lists)
+![CI](https://github.com/Moxio/commonmark-ext-fancy-lists/workflows/CI/badge.svg)
 [![Latest Stable Version](https://poser.pugx.org/moxio/commonmark-ext-fancy-lists/v/stable)](https://packagist.org/packages/moxio/commonmark-ext-fancy-lists)
 [![Buy us a tree](https://img.shields.io/badge/Treeware-%F0%9F%8C%B3-lightgreen)](https://plant.treeware.earth/Moxio/commonmark-ext-fancy-lists)
 
