@@ -472,6 +472,62 @@ HTML;
         $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
     }
 
+    public function testDoesNotSupportAnOrdinalIndicatorByDefault(): void
+    {
+        $markdown = <<<MD
+1º. foo
+2º. bar
+3º. baz
+MD;
+        $expectedHtml = <<<HTML
+<p>1&#xBA;. foo
+2&#xBA;. bar
+3&#xBA;. baz</p>
+HTML;
+
+        $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
+    }
+
+    public function testSupportsAnOrdinalIndicatorIfEnabledInConfiguration(): void
+    {
+        $markdown = <<<MD
+1º. foo
+2º. bar
+3º. baz
+MD;
+        $expectedHtml = <<<HTML
+<ol class="ordinal">
+  <li>foo</li>
+  <li>bar</li>
+  <li>baz</li>
+</ol>
+HTML;
+
+        $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown, [
+            'allow_ordinal' => true,
+        ]);
+    }
+
+    public function testAllowsOrdinalIndicatorsWithRomanNumerals(): void
+    {
+        $markdown = <<<MD
+IIº. foo
+IIIº. bar
+IVº. baz
+MD;
+        $expectedHtml = <<<HTML
+<ol type="I" start="2" class="ordinal">
+  <li>foo</li>
+  <li>bar</li>
+  <li>baz</li>
+</ol>
+HTML;
+
+        $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown, [
+            'allow_ordinal' => true,
+        ]);
+    }
+
     public function assertMarkdownIsConvertedTo(string $expectedHtml, string $markdown, ?array $config = null): void
     {
         $environment = Environment::createCommonMarkEnvironment();

@@ -77,7 +77,8 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
             $markerLength = 1;
             $number = null;
             $numberingType = null;
-        } elseif (($matches = RegexHelper::matchAll('/^(\d{1,9}|[a-z]|[A-Z]|[ivxlcdm]+|[IVXLCDM]+|#)([.)])/', $rest)) && (!($context->getContainer() instanceof Paragraph) || in_array($matches[1], ['1', 'a', 'A', 'i', 'I', '#'], true))) {
+            $ordinalIndicator = null;
+        } elseif (($matches = RegexHelper::matchAll('/^(\d{1,9}|[a-z]|[A-Z]|[ivxlcdm]+|[IVXLCDM]+|#)(\x{00BA}?)([.)])/u', $rest)) && (!($context->getContainer() instanceof Paragraph) || in_array($matches[1], ['1', 'a', 'A', 'i', 'I', '#'], true))) {
             $data = new ListData();
             $data->markerOffset = $indent;
             $data->type = ListBlock::TYPE_ORDERED;
@@ -136,10 +137,11 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
                 }
             }
 
-            $data->delimiter = $matches[2];
+            $data->delimiter = $matches[3];
             $data->bulletChar = $numberingType;
-            $markerLength = \strlen($matches[0]);
+            $markerLength = \mb_strlen($matches[0]);
             $number = $matches[1];
+            $ordinalIndicator = $matches[2] ?: null;
         } else {
             return false;
         }
@@ -164,6 +166,11 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
             return false;
         }
 
+        // If the marker uses an ordinal indicator, ensure that this is enabled by config
+        if ($ordinalIndicator !== null && !$this->config->get('allow_ordinal', false)) {
+            return false;
+        }
+
         // We've got a match! Advance offset and calculate padding
         $cursor->advanceToNextNonSpaceOrTab(); // to start of marker
         $cursor->advanceBy($markerLength, true); // to end of marker
@@ -174,6 +181,9 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
             $listBlock = new ListBlock($data);
             if ($numberingType !== null) {
                 $listBlock->data['attributes']['type'] = $numberingType;
+            }
+            if ($ordinalIndicator !== null) {
+                $listBlock->data['attributes']['class'] = 'ordinal';
             }
 
             $context->addBlock($listBlock);
