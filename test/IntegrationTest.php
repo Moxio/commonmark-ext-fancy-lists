@@ -472,10 +472,13 @@ HTML;
         $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown);
     }
 
-    public function assertMarkdownIsConvertedTo($expectedHtml, $markdown): void
+    public function assertMarkdownIsConvertedTo(string $expectedHtml, string $markdown, ?array $config = null): void
     {
         $environment = Environment::createCommonMarkEnvironment();
         $environment->addExtension(new FancyListsExtension());
+        if ($config !== null) {
+            $environment->setConfig($config);
+        }
 
         $parser = new DocParser($environment);
         $renderer = new HtmlRenderer($environment);
