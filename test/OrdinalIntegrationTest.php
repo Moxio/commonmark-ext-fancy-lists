@@ -91,6 +91,28 @@ HTML;
         ]);
     }
 
+    public function testToleratesCharactersCommonlyMistakenForOrdinalIndicators(): void
+    {
+        $markdown = <<<MD
+1°. degree sign
+2˚. ring above
+3ᵒ. modifier letter small o
+4º. ordinal indicator
+MD;
+        $expectedHtml = <<<HTML
+<ol class="ordinal">
+  <li>degree sign</li>
+  <li>ring above</li>
+  <li>modifier letter small o</li>
+  <li>ordinal indicator</li>
+</ol>
+HTML;
+
+        $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown, [
+            'allow_ordinal' => true,
+        ]);
+    }
+
     public function assertMarkdownIsConvertedTo(string $expectedHtml, string $markdown, ?array $config = null): void
     {
         $environment = Environment::createCommonMarkEnvironment();
