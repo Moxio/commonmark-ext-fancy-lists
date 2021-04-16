@@ -177,7 +177,7 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
         $data->padding = $this->calculateListMarkerPadding($cursor, $markerLength);
 
         // add the list if needed
-        if (!($container instanceof ListBlock) || !$data->equals($container->getListData())) {
+        if (!($container instanceof ListBlock) || !$this->isCompatibleWithExistingList($container, $data)) {
             $listBlock = new ListBlock($data);
             if ($numberingType !== null) {
                 $listBlock->data['attributes']['type'] = $numberingType;
@@ -239,5 +239,10 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
         }
 
         return $this->listMarkerRegex = '/^[' . \preg_quote(\implode('', $markers), '/') . ']/';
+    }
+
+    private function isCompatibleWithExistingList(ListBlock $container, ListData $newItemListData): bool
+    {
+       return $newItemListData->equals($container->getListData());
     }
 }
