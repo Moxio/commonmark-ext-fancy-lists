@@ -65,6 +65,32 @@ HTML;
         ]);
     }
 
+    public function testStartsANewListWhenOrdinalIndicatorsAreIntroducedOrOmitted()
+    {
+        $markdown = <<<MD
+1) First
+1º) First again
+2º) Second
+1) Another first
+MD;
+        $expectedHtml = <<<HTML
+<ol>
+  <li>First</li>
+</ol>
+<ol class="ordinal">
+  <li>First again</li>
+  <li>Second</li>
+</ol>
+<ol>
+  <li>Another first</li>
+</ol>
+HTML;
+
+        $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown, [
+            'allow_ordinal' => true,
+        ]);
+    }
+
     public function assertMarkdownIsConvertedTo(string $expectedHtml, string $markdown, ?array $config = null): void
     {
         $environment = Environment::createCommonMarkEnvironment();
