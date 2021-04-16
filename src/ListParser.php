@@ -77,7 +77,7 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
             $markerLength = 1;
             $number = null;
             $numberingType = null;
-            $ordinalIndicator = null;
+            $hasOrdinalIndicator = false;
         } elseif (($matches = RegexHelper::matchAll('/^(\d{1,9}|[a-z]|[A-Z]|[ivxlcdm]+|[IVXLCDM]+|#)(\x{00BA}?)([.)])/u', $rest)) && (!($context->getContainer() instanceof Paragraph) || in_array($matches[1], ['1', 'a', 'A', 'i', 'I', '#'], true))) {
             $data = new ListData();
             $data->markerOffset = $indent;
@@ -141,7 +141,7 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
             $data->bulletChar = $numberingType;
             $markerLength = \mb_strlen($matches[0]);
             $number = $matches[1];
-            $ordinalIndicator = $matches[2] ?: null;
+            $hasOrdinalIndicator = $matches[2] !== "";
         } else {
             return false;
         }
@@ -167,7 +167,7 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
         }
 
         // If the marker uses an ordinal indicator, ensure that this is enabled by config
-        if ($ordinalIndicator !== null && !$this->config->get('allow_ordinal', false)) {
+        if ($hasOrdinalIndicator && !$this->config->get('allow_ordinal', false)) {
             return false;
         }
 
@@ -177,12 +177,12 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
         $data->padding = $this->calculateListMarkerPadding($cursor, $markerLength);
 
         // add the list if needed
-        if (!($container instanceof ListBlock) || !$this->isCompatibleWithExistingList($container, $data, $ordinalIndicator)) {
+        if (!($container instanceof ListBlock) || !$this->isCompatibleWithExistingList($container, $data, $hasOrdinalIndicator)) {
             $listBlock = new ListBlock($data);
             if ($numberingType !== null) {
                 $listBlock->data['attributes']['type'] = $numberingType;
             }
-            if ($ordinalIndicator !== null) {
+            if ($hasOrdinalIndicator) {
                 $listBlock->data['attributes']['class'] = 'ordinal';
             }
 
@@ -241,7 +241,7 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
         return $this->listMarkerRegex = '/^[' . \preg_quote(\implode('', $markers), '/') . ']/';
     }
 
-    private function isCompatibleWithExistingList(ListBlock $container, ListData $newItemListData, ?string $newItemOrdinalIndicator): bool
+    private function isCompatibleWithExistingList(ListBlock $container, ListData $newItemListData, bool $newItemHasOrdinalIndicator): bool
     {
         if (!$newItemListData->equals($container->getListData())) {
             return false;
@@ -249,7 +249,6 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
 
         $listClass = $container->data['attributes']['class'] ?? '';
         $listHasOrdinalIndicator = $listClass === 'ordinal';
-        $newItemHasOrdinalIndicator = $newItemOrdinalIndicator !== null;
         if ($listHasOrdinalIndicator !== $newItemHasOrdinalIndicator) {
             return false;
         }
