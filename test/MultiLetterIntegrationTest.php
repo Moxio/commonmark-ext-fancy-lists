@@ -5,9 +5,8 @@ use League\CommonMark\DocParser;
 use League\CommonMark\Environment;
 use League\CommonMark\HtmlRenderer;
 use Moxio\CommonMark\Extension\FancyLists\FancyListsExtension;
-use PHPUnit\Framework\TestCase;
 
-class MultiLetterIntegrationTest extends TestCase
+class MultiLetterIntegrationTest extends AbstractIntegrationTest
 {
     public function testDoesNotSupportMultiLetterListMarkersByDefault(): void
     {
@@ -119,20 +118,5 @@ HTML;
         $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown, [
             'allow_multi_letter' => true,
         ]);
-    }
-
-    public function assertMarkdownIsConvertedTo(string $expectedHtml, string $markdown, ?array $config = null): void
-    {
-        $environment = Environment::createCommonMarkEnvironment();
-        $environment->addExtension(new FancyListsExtension());
-        if ($config !== null) {
-            $environment->setConfig($config);
-        }
-
-        $parser = new DocParser($environment);
-        $renderer = new HtmlRenderer($environment);
-        $actualOutput = $renderer->renderBlock($parser->parse($markdown));
-
-        $this->assertXmlStringEqualsXmlString("<html>$expectedHtml</html>", "<html>$actualOutput</html>");
     }
 }

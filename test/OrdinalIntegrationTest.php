@@ -5,9 +5,8 @@ use League\CommonMark\DocParser;
 use League\CommonMark\Environment;
 use League\CommonMark\HtmlRenderer;
 use Moxio\CommonMark\Extension\FancyLists\FancyListsExtension;
-use PHPUnit\Framework\TestCase;
 
-class OrdinalIntegrationTest extends TestCase
+class OrdinalIntegrationTest extends AbstractIntegrationTest
 {
     public function testDoesNotSupportAnOrdinalIndicatorByDefault(): void
     {
@@ -111,20 +110,5 @@ HTML;
         $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown, [
             'allow_ordinal' => true,
         ]);
-    }
-
-    public function assertMarkdownIsConvertedTo(string $expectedHtml, string $markdown, ?array $config = null): void
-    {
-        $environment = Environment::createCommonMarkEnvironment();
-        $environment->addExtension(new FancyListsExtension());
-        if ($config !== null) {
-            $environment->setConfig($config);
-        }
-
-        $parser = new DocParser($environment);
-        $renderer = new HtmlRenderer($environment);
-        $actualOutput = $renderer->renderBlock($parser->parse($markdown));
-
-        $this->assertXmlStringEqualsXmlString("<html>$expectedHtml</html>", "<html>$actualOutput</html>");
     }
 }
