@@ -78,7 +78,7 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
             $number = null;
             $numberingType = null;
             $hasOrdinalIndicator = false;
-        } elseif (($matches = RegexHelper::matchAll('/^(\d{1,9}|[a-z]|[A-Z]|[ivxlcdm]+|[IVXLCDM]+|#)([\x{00BA}\x{00B0}\x{02DA}\x{1D52}]?)([.)])/u', $rest)) && (!($context->getContainer() instanceof Paragraph) || in_array($matches[1], ['1', 'a', 'A', 'i', 'I', '#'], true))) {
+        } elseif (($matches = RegexHelper::matchAll('/^(\d{1,9}|[a-z]{1,3}|[A-Z]{1,3}|[ivxlcdm]+|[IVXLCDM]+|#)([\x{00BA}\x{00B0}\x{02DA}\x{1D52}]?)([.)])/u', $rest)) && (!($context->getContainer() instanceof Paragraph) || in_array($matches[1], ['1', 'a', 'A', 'i', 'I', '#'], true))) {
             $data = new ListData();
             $data->markerOffset = $indent;
             $data->type = ListBlock::TYPE_ORDERED;
@@ -102,14 +102,14 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
                 } catch (RomansLexerException|RomansParserException $e) {
                     $isValidRoman = false;
                 }
-                $isValidAlpha = strlen($matches[1]) === 1;
+                $isValidAlpha = strlen($matches[1]) === 1 || $this->config->get('allow_multi_letter', false);
                 $preferRomanOverAlpha = $withinRomanList || (!$withinAlphaList && $matches[1] === 'I');
 
                 if ($isValidRoman && (!$isValidAlpha || $preferRomanOverAlpha)) {
                     $data->start = $parsedRomanNumber;
                     $numberingType = 'I';
                 } else if ($isValidAlpha) {
-                    $data->start = ord($matches[1]) - ord('A') + 1;
+                    $data->start = NumberingUtils::convertAlphaMarkerToOrdinalNumber($matches[1]);
                     $numberingType = 'A';
                 } else {
                     return false;
@@ -123,14 +123,14 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
                 } catch (RomansLexerException|RomansParserException $e) {
                     $isValidRoman = false;
                 }
-                $isValidAlpha = strlen($matches[1]) === 1;
+                $isValidAlpha = strlen($matches[1]) === 1 || $this->config->get('allow_multi_letter', false);
                 $preferRomanOverAlpha = $withinRomanList || (!$withinAlphaList && $matches[1] === 'i');
 
                 if ($isValidRoman && (!$isValidAlpha || $preferRomanOverAlpha)) {
                     $data->start = $parsedRomanNumber;
                     $numberingType = 'i';
                 } else if ($isValidAlpha) {
-                    $data->start = ord($matches[1]) - ord('a') + 1;
+                    $data->start = NumberingUtils::convertAlphaMarkerToOrdinalNumber($matches[1]);
                     $numberingType = 'a';
                 } else {
                     return false;
