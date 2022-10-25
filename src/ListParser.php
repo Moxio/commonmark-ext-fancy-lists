@@ -103,7 +103,7 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
                     $isValidRoman = false;
                 }
                 $isValidAlpha = strlen($matches[1]) === 1 || $this->config->get('allow_multi_letter', false);
-                $preferRomanOverAlpha = $withinRomanList || (!$withinAlphaList && $matches[1] === 'I');
+                $preferRomanOverAlpha = $withinRomanList || (!$withinAlphaList && ($matches[1] === 'I' || strlen($matches[1]) > 1));
 
                 if ($isValidRoman && (!$isValidAlpha || $preferRomanOverAlpha)) {
                     $data->start = $parsedRomanNumber;
@@ -124,7 +124,7 @@ final class ListParser implements BlockParserInterface, ConfigurationAwareInterf
                     $isValidRoman = false;
                 }
                 $isValidAlpha = strlen($matches[1]) === 1 || $this->config->get('allow_multi_letter', false);
-                $preferRomanOverAlpha = $withinRomanList || (!$withinAlphaList && $matches[1] === 'i');
+                $preferRomanOverAlpha = $withinRomanList || (!$withinAlphaList && ($matches[1] === 'i' || strlen($matches[1]) > 1));
 
                 if ($isValidRoman && (!$isValidAlpha || $preferRomanOverAlpha)) {
                     $data->start = $parsedRomanNumber;

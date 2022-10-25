@@ -114,4 +114,44 @@ HTML;
             'allow_multi_letter' => true,
         ]);
     }
+
+    public function testPrefersRomanNumeralsOverMultiLetterAlphabeticNumerals(): void
+    {
+        $markdown = <<<MD
+II) foo
+III) bar
+IV) baz
+MD;
+        $expectedHtml = <<<HTML
+<ol type="I" start="2">
+  <li>foo</li>
+  <li>bar</li>
+  <li>baz</li>
+</ol>
+HTML;
+
+        $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown, [
+            'allow_multi_letter' => true,
+        ]);
+    }
+
+    public function testPrefersMultiLetterAlphabeticNumeralsOverRomanNumeralsWhenAlreadyInAnAlphabeticList(): void
+    {
+        $markdown = <<<MD
+IH) foo
+II) bar
+IJ) baz
+MD;
+        $expectedHtml = <<<HTML
+<ol type="A" start="242">
+  <li>foo</li>
+  <li>bar</li>
+  <li>baz</li>
+</ol>
+HTML;
+
+        $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown, [
+            'allow_multi_letter' => true,
+        ]);
+    }
 }
