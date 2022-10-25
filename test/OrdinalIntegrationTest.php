@@ -1,11 +1,6 @@
 <?php
 namespace Moxio\CommonMark\Extension\FancyLists\Test;
 
-use League\CommonMark\DocParser;
-use League\CommonMark\Environment;
-use League\CommonMark\HtmlRenderer;
-use Moxio\CommonMark\Extension\FancyLists\FancyListsExtension;
-
 class OrdinalIntegrationTest extends AbstractIntegrationTest
 {
     public function testDoesNotSupportAnOrdinalIndicatorByDefault(): void
