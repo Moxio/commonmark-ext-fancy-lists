@@ -11,8 +11,8 @@ Uses unofficial markdown syntax based on the syntax supported by
 [Pandoc](https://pandoc.org/MANUAL.html#extension-fancy_lists). See the
 section [Syntax](#syntax) below for details.
 
-The parser is a modified version of the original [`ListParser`](https://github.com/thephpleague/commonmark/blob/1.5/src/Block/Parser/ListParser.php)
-from [`league/commonmark`](https://github.com/thephpleague/commonmark)
+The parser is a modified version of the original [`ListBlockStartParser`](hhttps://github.com/thephpleague/commonmark/blob/2.3/src/Extension/CommonMark/Parser/Block/ListBlockStartParser.php)
+and related classes from [`league/commonmark`](https://github.com/thephpleague/commonmark)
 by [Colin O'Dell](https://github.com/colinodell), which is licensed
 under the BSD-3-Clause License. It is in turn based on the
 [CommonMark JS reference implementation](https://github.com/jgm/commonmark.js)
@@ -21,7 +21,7 @@ by [John MacFarlane](https://github.com/jgm).
 
 Requirements
 ------------
-This library requires PHP version 7.4 or higher and a `1.x` release of
+This library requires PHP version 7.4 or higher and a `2.x` release of
 `league/commonmark`.
 
 Installation
@@ -36,22 +36,24 @@ Usage
 Add `FancyListsExtension` as an extension to your CommonMark environment
 instance and you're good to go:
 ```php
-use League\CommonMark\CommonMarkConverter;
-use League\CommonMark\Environment;
+use League\CommonMark\Environment\Environment;
+use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
+use League\CommonMark\MarkdownConverter;
 use Moxio\CommonMark\Extension\FancyLists\FancyListsExtension;
 
-$environment = Environment::createCommonMarkEnvironment();
+$environment = new Environment();
+$environment->addExtension(new CommonMarkCoreExtension());
 $environment->addExtension(new FancyListsExtension());
 
-// Use $environment when building your CommonMarkConverter
-$converter = new CommonMarkConverter([], $environment);
+// Use $environment when building your MarkdownConverter
+$converter = new MarkdownConverter($environment);
 echo $converter->convertToHtml('
 a) foo
 b) bar
 c) baz
 ');
 ```
-See the [CommonMark documentation](https://commonmark.thephpleague.com/1.5/extensions/overview/#usage)
+See the [CommonMark documentation](https://commonmark.thephpleague.com/2.3/extensions/overview/#usage)
 for more information about using extensions.
 
 Syntax
@@ -128,6 +130,22 @@ are two small differences with Pandoc's syntax:
 
 Configuration
 -------------
+All configuration options are put under a `fancy_lists` key. You can
+specify the configuration when creating your `Environment` class:
+```php
+use League\CommonMark\Environment\Environment;
+
+$environment = new Environment([
+    'fancy_lists' => [
+        'allow_ordinal' => true,
+        // ...
+    ],
+]);
+```
+
+See the `league/commonmark` [documentation](https://commonmark.thephpleague.com/2.3/configuration/)
+about configuration for more details on how to specify configuration.
+
 Supported configuration options:
 
 * `allow_ordinal` - Whether to allow an [ordinal indicator](https://en.wikipedia.org/wiki/Ordinal_indicator)

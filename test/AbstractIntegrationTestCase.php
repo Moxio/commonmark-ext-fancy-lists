@@ -1,25 +1,24 @@
 <?php
 namespace Moxio\CommonMark\Extension\FancyLists\Test;
 
-use League\CommonMark\DocParser;
-use League\CommonMark\Environment;
-use League\CommonMark\HtmlRenderer;
+use League\CommonMark\Parser\MarkdownParser;
+use League\CommonMark\Environment\Environment;
+use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
+use League\CommonMark\Renderer\HtmlRenderer;
 use Moxio\CommonMark\Extension\FancyLists\FancyListsExtension;
 use PHPUnit\Framework\TestCase;
 
-abstract class AbstractIntegrationTest extends TestCase
+abstract class AbstractIntegrationTestCase extends TestCase
 {
     protected function assertMarkdownIsConvertedTo(string $expectedHtml, string $markdown, ?array $config = null): void
     {
-        $environment = Environment::createCommonMarkEnvironment();
+        $environment = new Environment($config ?? []);
+        $environment->addExtension(new CommonMarkCoreExtension());
         $environment->addExtension(new FancyListsExtension());
-        if ($config !== null) {
-            $environment->setConfig($config);
-        }
 
-        $parser = new DocParser($environment);
+        $parser = new MarkdownParser($environment);
         $renderer = new HtmlRenderer($environment);
-        $actualOutput = $renderer->renderBlock($parser->parse($markdown));
+        $actualOutput = $renderer->renderDocument($parser->parse($markdown));
 
         $this->assertXmlStringEqualsXmlString("<html>$expectedHtml</html>", "<html>$actualOutput</html>");
     }

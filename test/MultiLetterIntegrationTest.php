@@ -1,7 +1,7 @@
 <?php
 namespace Moxio\CommonMark\Extension\FancyLists\Test;
 
-class MultiLetterIntegrationTest extends AbstractIntegrationTest
+class MultiLetterIntegrationTest extends AbstractIntegrationTestCase
 {
     public function testDoesNotSupportMultiLetterListMarkersByDefault(): void
     {
@@ -35,7 +35,9 @@ MD;
 HTML;
 
         $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown, [
-            'allow_multi_letter' => true,
+            'fancy_lists' => [
+                'allow_multi_letter' => true,
+            ],
         ]);
     }
 
@@ -55,7 +57,9 @@ MD;
 HTML;
 
         $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown, [
-            'allow_multi_letter' => true,
+            'fancy_lists' => [
+                'allow_multi_letter' => true,
+            ],
         ]);
     }
 
@@ -75,7 +79,9 @@ MD;
 HTML;
 
         $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown, [
-            'allow_multi_letter' => true,
+            'fancy_lists' => [
+                'allow_multi_letter' => true,
+            ],
         ]);
     }
 
@@ -93,7 +99,9 @@ AAAC) baz</p>
 HTML;
 
         $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown, [
-            'allow_multi_letter' => true,
+            'fancy_lists' => [
+                'allow_multi_letter' => true,
+            ],
         ]);
     }
 
@@ -111,7 +119,9 @@ Ac) baz</p>
 HTML;
 
         $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown, [
-            'allow_multi_letter' => true,
+            'fancy_lists' => [
+                'allow_multi_letter' => true,
+            ],
         ]);
     }
 
@@ -131,7 +141,9 @@ MD;
 HTML;
 
         $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown, [
-            'allow_multi_letter' => true,
+            'fancy_lists' => [
+                'allow_multi_letter' => true,
+            ],
         ]);
     }
 
@@ -151,7 +163,9 @@ MD;
 HTML;
 
         $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown, [
-            'allow_multi_letter' => true,
+            'fancy_lists' => [
+                'allow_multi_letter' => true,
+            ],
         ]);
     }
 }
