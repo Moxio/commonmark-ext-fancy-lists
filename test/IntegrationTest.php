@@ -1,7 +1,7 @@
 <?php
 namespace Moxio\CommonMark\Extension\FancyLists\Test;
 
-class IntegrationTest extends AbstractIntegrationTest
+class IntegrationTest extends AbstractIntegrationTestCase
 {
     // Testcase from https://spec.commonmark.org/0.29/#example-272
     public function testDoesNotAlterOrdinaryOrderedListSyntax(): void

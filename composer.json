@@ -22,8 +22,11 @@
 	},
 	"require": {
 		"php": "^7.4 || ^8.0",
+		"ext-ctype": "*",
 		"ext-mbstring": "*",
-		"league/commonmark": "^1.0",
+		"league/commonmark": "^2.0",
+		"league/config": "^1.1.1",
+		"nette/schema": "^1.2",
 		"wandersonwhcr/romans": "^1.2"
 	},
 	"require-dev": {

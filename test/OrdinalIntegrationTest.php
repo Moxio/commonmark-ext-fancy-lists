@@ -1,7 +1,7 @@
 <?php
 namespace Moxio\CommonMark\Extension\FancyLists\Test;
 
-class OrdinalIntegrationTest extends AbstractIntegrationTest
+class OrdinalIntegrationTest extends AbstractIntegrationTestCase
 {
     public function testDoesNotSupportAnOrdinalIndicatorByDefault(): void
     {
@@ -35,7 +35,9 @@ MD;
 HTML;
 
         $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown, [
-            'allow_ordinal' => true,
+            'fancy_lists' => [
+                'allow_ordinal' => true,
+            ],
         ]);
     }
 
@@ -55,7 +57,9 @@ MD;
 HTML;
 
         $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown, [
-            'allow_ordinal' => true,
+            'fancy_lists' => [
+                'allow_ordinal' => true,
+            ],
         ]);
     }
 
@@ -81,7 +85,9 @@ MD;
 HTML;
 
         $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown, [
-            'allow_ordinal' => true,
+            'fancy_lists' => [
+                'allow_ordinal' => true,
+            ],
         ]);
     }
 
@@ -103,7 +109,9 @@ MD;
 HTML;
 
         $this->assertMarkdownIsConvertedTo($expectedHtml, $markdown, [
-            'allow_ordinal' => true,
+            'fancy_lists' => [
+                'allow_ordinal' => true,
+            ],
         ]);
     }
 }
