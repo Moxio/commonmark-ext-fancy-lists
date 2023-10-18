@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace Moxio\CommonMark\Extension\FancyLists;
 
+use League\CommonMark\Extension\CommonMark\Node\Block\ListBlock;
 use League\CommonMark\Parser\Block\BlockStart;
 use League\CommonMark\Parser\Cursor;
 use League\CommonMark\Parser\Block\BlockStartParserInterface;
@@ -88,7 +89,7 @@ final class ListBlockStartParser implements BlockStartParserInterface, Configura
 
         // If the marker is a capital letter with a period, make sure it is followed by at least two spaces.
         // See https://pandoc.org/MANUAL.html#fn1
-        if ($data->number !== null && $data->delimiter === "." && strlen($data->number) === 1 && ctype_upper($data->number)) {
+        if ($data->number !== null && $data->delimiter === ListBlock::DELIM_PERIOD && strlen($data->number) === 1 && ctype_upper($data->number)) {
             $nextChar = $tmpCursor->peek($markerLength + 1);
             if (!($nextChar === null || $nextChar === "\t" || $nextChar === ' ')) {
                 return null;

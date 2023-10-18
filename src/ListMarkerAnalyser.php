@@ -108,7 +108,7 @@ class ListMarkerAnalyser
             $data                      = new FancyListData();
             $data->markerOffset        = $indent;
             $data->type                = ListBlock::TYPE_ORDERED;
-            $data->delimiter           = $matches[3];
+            $data->delimiter           = $matches[3] === '.' ? ListBlock::DELIM_PERIOD : ListBlock::DELIM_PAREN;
             $data->start               = $start;
             $data->marker              = $matches[0];
             $data->number              = $matches[1];
